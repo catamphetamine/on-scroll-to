@@ -72,6 +72,11 @@
 
 			function renderMessages() {
 				const messagesContainer = document.getElementById('messages')
+				// Clear the container.
+				while (messagesContainer.firstChild) {
+					messagesContainer.removeChild(messagesContainer.firstChild)
+				}
+				// Render the messages into the container.
 				for (const message of state.messages) {
 					messagesContainer.appendChild(renderMessage(message))
 				}
