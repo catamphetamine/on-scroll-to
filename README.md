@@ -32,16 +32,16 @@ new OnScrollTo(
 )
 ```
 
-* `getElement()` function should return the DOM Element which will get the `onScrollTo` action triggered when it's scrolled to.
+* `getElement()` function should return the DOM Element which will get the `onScrollTo()` action triggered when it's scrolled to.
 * `onScrollTo()` function is the action that will get triggered when the DOM Element is scrolled to.
 * `onStateChange(state)` function gets called whenever `OnScrollTo` instance's state changes.
 * `options` is an optional argument.
 
 Available `options`:
 
-* `distance` — Is a `number` in pixels and is screen height by default meaning that `onScrollTo()` function will get called as soon as the user scrolls down to the component's Y position minus screen height. Can be used to perform some action ahead of time before the user scrolls down to the bottom. For example, to load next list items before the user scrolls down to the end of the currently shown list items.
+* `distance` — Is a `number` (in pixels) and by default is equal to screen height meaning that `onScrollTo()` function will get called as soon as the user scrolls down to the component's Y position minus screen height. Can be used to perform some action ahead of time before the user scrolls down to the actual DOM Element. For example, to load next list items before the user scrolls down to the end of the currently shown list items.
 
-When `OnScrollTo` DOM Element is scrolled to the `OnScrollTo` component is "deactivated" and `onScrollTo()` function is called. The `onScrollTo()` function must return either `true` (or a `Promise` resolving to `true`) to re-enable the `OnScrollTo` component or `false` (or a `Promise` resolving to `false`) if the `OnScrollTo` component is no longer needed on the page in which case it disappears (returns nothing when rendered).
+When `OnScrollTo` DOM Element is scrolled to the `OnScrollTo` component is "deactivated" and `onScrollTo()` function is called. The `onScrollTo()` function must return either `true` (or a `Promise` resolving to `true`) to re-activate the `OnScrollTo` component or `false` (or a `Promise` resolving to `false`) if the `OnScrollTo` component is no longer needed on the page in which case it disappears (returns nothing when rendered).
 
 The `onScrollTo()` function could look like this:
 
@@ -65,8 +65,8 @@ The `OnScrollTo` class instance provides methods:
 
 * `onMount()` — Should be called when the `OnScrollTo` component is "mounted" (rendered) on a page.
 * `onUnmount()` — Should be called when the `OnScrollTo` component is "unmounted" (removed) from the page.
-* `getState()` — Returns `OnScrollTo` state.
-* `retry()` — Can be used for manually re-enabling the `OnScrollTo` component if an `error` happened.
+* `getState()` — Returns `OnScrollTo` instance state.
+* `retry()` — Can be used for manually re-activating the `OnScrollTo` component if an `error` happened.
 
 `OnScrollTo` state provides properties:
 
@@ -116,11 +116,7 @@ function render(state) {
   return element
 }
 
-const onScrollToComponent = new OnScrollTo(
-  onScrollTo,
-  render,
-  options
-)
+const onScrollToComponent = new OnScrollTo(onScrollTo, render)
 
 // Call `.mount()` for the initial render.
 // All subsequent renders will be automatic.
@@ -138,7 +134,7 @@ onScrollToComponent.mount()
 
 `OnScrollTo` instance provides methods:
 
-* `retry()` — Can be used for manually re-enabling the `OnScrollTo` component if an `error` happened.
+* `retry()` — Can be used for manually re-activating the `OnScrollTo` component if an `error` happened.
 
 ### React
 
@@ -149,11 +145,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import OnScrollTo from 'on-scroll-to/react'
 
-function Example({ onScrollTo }) {
+function Example() {
   return (
     <OnScrollTo
       onScrollTo={onScrollTo}
-      component={LoadMoreItemsOnScroll}
+      component={LoadMoreItemsOnScroll}/>
   )
 }
 
@@ -181,20 +177,25 @@ LoadMoreItemsOnScroll.propTypes = {
   error: PropTypes.any,
   retry: PropTypes.func.isRequired
 }
+
+ReactDOM.render(
+  <Example/>,
+  document.getElementById('root')
+)
 ```
 
 `<OnScrollTo/>` component receives properties:
 
 * `onScrollTo()` — The function that gets called when the component is scrolled to.
 * `component` — A React component for the `OnScrollTo` DOM Element.
-* `distance` — (optional) Trigger distance.
+* `distance` — (optional) The `distance` option for the core `OnScrollTo` class constructor.
 
 `component` receives properties:
 
-* `setDOMNode()` — Should be passed as `ref` on the root DOM Element.
-* `loading` — (optional) Will be `true` if `OnScrollTo` component is in "disabled" state (`onScrollTo()` returned a `Promise` which hasn't been resolved or rejected yet).
+* `setDOMNode()` — Should be passed as `ref` to the root DOM Element of the component.
+* `loading` — (optional) Will be `true` if `onScrollTo()` returned a `Promise` which hasn't been resolved or rejected yet.
 * `error` — (optional) If `onScrollTo()` throws an `error` (or rejects with an `error`) then the `error` property will be passed.
-* `retry()` — Can be used for manually re-enabling the `OnScrollTo` component if an `error` happened.
+* `retry()` — Can be used for manually re-activating the `OnScrollTo` component if an `error` happened.
 
 ## Debug
 
