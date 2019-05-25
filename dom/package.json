@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "name": "on-scroll-to-dom",
+  "version": "1.0.0",
+  "main": "index.commonjs.js",
+  "module": "index.js",
+  "sideEffects": [
+    "*.css"
+  ]
+}
